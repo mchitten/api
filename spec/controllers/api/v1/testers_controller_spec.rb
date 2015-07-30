@@ -5,7 +5,7 @@ require 'spec_helper'
 shared_examples_for 'a wrappable endpoint' do |body, method, endpoint|
   context 'with no envelope' do
     before do
-      QuirkyApi.config.envelope = nil
+      allow(QuirkyApi).to receive_message_chain(:config, :envelope).and_return(nil)
     end
 
     it 'returns just the body' do
@@ -16,12 +16,12 @@ shared_examples_for 'a wrappable endpoint' do |body, method, endpoint|
 
   context 'with an envelope' do
     before do
-      QuirkyApi.config.envelope = 'data'
+      allow(QuirkyApi).to receive_message_chain(:config, :envelope).and_return('data')
     end
 
-    after do
-      QuirkyApi.config.envelope = nil
-    end
+    # after do
+    #   QuirkyApi.config.envelope = nil
+    # end
 
     it 'returns the body, wrapped in an envelope' do
       send(method, endpoint)
@@ -31,7 +31,10 @@ shared_examples_for 'a wrappable endpoint' do |body, method, endpoint|
 end
 
 describe Api::V1::TestersController, type: :controller do
-  before { QuirkyApi.config.pretty_print = false }
+  before do
+    allow(QuirkyApi).to receive(:config).and_call_original
+    allow(QuirkyApi).to receive_message_chain(:config, :pretty_print).and_return(false)
+  end
 
   describe 'GET #as_one' do
     before { @tester = FactoryGirl.create(:tester, name: 'Tester', last_name: 'Atqu') }
@@ -100,7 +103,7 @@ describe Api::V1::TestersController, type: :controller do
 
     context 'with no envelope' do
       before do
-        QuirkyApi.config.envelope = nil
+        allow(QuirkyApi).to receive_message_chain(:config, :envelope).and_return(nil)
       end
 
       it 'returns just the body' do
@@ -111,12 +114,12 @@ describe Api::V1::TestersController, type: :controller do
 
     context 'with an envelope' do
       before do
-        QuirkyApi.config.envelope = 'data'
+        allow(QuirkyApi).to receive_message_chain(:config, :envelope).and_return('data')
       end
 
-      after do
-        QuirkyApi.config.envelope = nil
-      end
+      # after do
+      #   QuirkyApi.config.envelope = nil
+      # end
 
       it 'returns the body, wrapped in an envelope' do
         get :as_str, format: 'json'
@@ -321,12 +324,12 @@ describe Api::V1::TestersController, type: :controller do
   describe 'GET #with_elements' do
     context 'with an envelope' do
       before do
-        QuirkyApi.config.envelope = 'data'
+        allow(QuirkyApi).to receive_message_chain(:config, :envelope).and_return('data')
       end
 
-      after do
-        QuirkyApi.config.envelope = nil
-      end
+      # after do
+      #   QuirkyApi.config.envelope = nil
+      # end
 
       it 'returns data with top level elements' do
         get :with_hash_elements
@@ -374,15 +377,18 @@ describe Api::V1::TestersController, type: :controller do
 
   describe 'GET #with_callback' do
     context 'if jsonp is enabled' do
-      before { QuirkyApi.config.jsonp = true }
+      before do
+        allow(QuirkyApi).to receive_message_chain(:config, :jsonp).and_return(true)
+      end
+
       context 'with an envelope' do
         before do
-          QuirkyApi.config.envelope = 'data'
+          allow(QuirkyApi).to receive_message_chain(:config, :envelope).and_return('data')
         end
 
-        after do
-          QuirkyApi.config.envelope = nil
-        end
+        # after do
+        #   QuirkyApi.config.envelope = nil
+        # end
 
         it 'returns data wrapped in a jsonp callback' do
           get :with_callback
@@ -397,7 +403,9 @@ describe Api::V1::TestersController, type: :controller do
         end
       end
       context 'with no envelope' do
-        before { QuirkyApi.config.envelope = nil }
+        before do
+          allow(QuirkyApi).to receive_message_chain(:config, :envelope).and_return(nil)
+        end
         it 'returns a jsonp string' do
           get :with_callback
           expect(response.body).to eq('/**/test({"data":"hello","meta":{"status":200}})')
@@ -412,7 +420,9 @@ describe Api::V1::TestersController, type: :controller do
       end
     end
     context 'if jsonp is disabled' do
-      before { QuirkyApi.config.jsonp = false }
+      before do
+        allow(QuirkyApi).to receive_message_chain(:config, :jsonp).and_return('data')
+      end
       it 'returns just a body' do
         get :with_callback
         expect(response.body).to eq 'hello'
@@ -515,12 +525,12 @@ describe Api::V1::TestersController, type: :controller do
       context 'if warn_invalid_fields is true' do
         context 'and there is an envelope' do
           before do
-            QuirkyApi.config.envelope = 'data'
+            allow(QuirkyApi).to receive_message_chain(:config, :envelope).and_return('data')
           end
 
-          after do
-            QuirkyApi.config.envelope = nil
-          end
+          # after do
+          #   QuirkyApi.config.envelope = nil
+          # end
 
           it 'throws a warning for bad optional fields' do
             allow(QuirkyApi).to receive_message_chain(:config, :warn_invalid_fields).and_return(true)
@@ -546,7 +556,7 @@ describe Api::V1::TestersController, type: :controller do
 
         context 'and there is no envelope' do
           before do
-            QuirkyApi.config.envelope = nil
+            allow(QuirkyApi).to receive_message_chain(:config, :envelope).and_return(nil)
           end
 
           it 'does not show warnings' do
@@ -570,12 +580,12 @@ describe Api::V1::TestersController, type: :controller do
       context 'if warn_invalid_fields is falsey' do
         context 'and there is an envelope' do
           before do
-            QuirkyApi.config.envelope = 'data'
+            allow(QuirkyApi).to receive_message_chain(:config, :envelope).and_return('data')
           end
 
-          after do
-            QuirkyApi.config.envelope = nil
-          end
+          # after do
+          #   QuirkyApi.config.envelope = nil
+          # end
 
           it 'throws no warning for bad optional fields' do
             allow(QuirkyApi).to receive_message_chain(:config, :warn_invalid_fields).and_return(false)
@@ -598,7 +608,7 @@ describe Api::V1::TestersController, type: :controller do
 
         context 'and there is no envelope' do
           before do
-            QuirkyApi.config.envelope = nil
+            allow(QuirkyApi).to receive_message_chain(:config, :envelope).and_return(nil)
           end
 
           it 'throws no warning for bad optional fields' do
