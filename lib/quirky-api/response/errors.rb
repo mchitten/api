@@ -108,8 +108,8 @@ module QuirkyApi
       # @param e [Exception] The exception that was raised.
       #
       def internal_error(e)
-        if QuirkyApi.exception_handler
-          QuirkyApi.exception_handler.call(e)
+        if QuirkyApi.config.exception_handler
+          QuirkyApi.config.exception_handler.call(e)
         else
           Rails.logger.error e.message
         end

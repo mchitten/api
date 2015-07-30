@@ -10,7 +10,7 @@ class JsonpAdapter < ApiAdapter
     # you should use the meta 'status' attribute to retrieve the actual
     # status code.
     callback = (options[:params].presence && options[:params][:callback].presence) || options[:callback]
-    if QuirkyApi.jsonp? && callback.present?
+    if QuirkyApi.config.jsonp? && callback.present?
       # JSONP responses must be wrapped in an envelope so there can be meta information.
       options[:envelope] = 'data' if options[:envelope].blank?
       (options[:elements] ||= {}).merge!(meta: { status: options[:status].presence || 200 })
@@ -24,7 +24,7 @@ class JsonpAdapter < ApiAdapter
     # and specify the callback to +render+.  Otherwise, we use the default
     # status code.
     callback = (options[:params].presence && options[:params][:callback].presence) || options[:callback]
-    if QuirkyApi.jsonp? && callback.present?
+    if QuirkyApi.config.jsonp? && callback.present?
       renderable[:callback] = callback
       renderable[:status] = 200
     else

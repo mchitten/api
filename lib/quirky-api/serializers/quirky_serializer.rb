@@ -230,7 +230,7 @@ class QuirkySerializer < ::ActiveModel::Serializer
     # @see QuirkyApi.configure
     def warnings(params)
       # Ignore unless warn_invalid_fields is set.
-      return unless QuirkyApi.warn_invalid_fields
+      return unless QuirkyApi.config.warn_invalid_fields
 
       # Basic information about the request.
       params = params.symbolize_keys
@@ -381,7 +381,7 @@ class QuirkySerializer < ::ActiveModel::Serializer
     returned = @associations & [*@opts[:associations]].map(&:to_sym)
 
     # Stop here unless we want to throw exceptions for bad associations.
-    return returned unless QuirkyApi.validate_associations
+    return returned unless QuirkyApi.config.validate_associations
 
     # Find invalid associations and throw an exception for them.
     if returned.blank? || returned.length != [*@opts[:associations]].length
@@ -411,7 +411,7 @@ class QuirkySerializer < ::ActiveModel::Serializer
     begin
       data = get_field(data, false)
     rescue InvalidField => e
-      if QuirkyApi.validate_associations
+      if QuirkyApi.config.validate_associations
         raise InvalidAssociation,
               "The '#{data}' association does not exist."
       else

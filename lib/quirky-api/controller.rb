@@ -42,7 +42,7 @@ module QuirkyApi
 
     def self.inherited(base)
       # Include the configured QuirkyApi.auth_system module in the inherited class.
-      base.send(:include, ::QuirkyApi.auth_system) if QuirkyApi.has_auth_system?
+      base.send(:include, QuirkyApi.config.auth_system) if QuirkyApi.config.has_auth_system?
       base.send(:include, QuirkyApi::Bouncer)
 
       base.send(:include, ActionController::Instrumentation)

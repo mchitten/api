@@ -3,6 +3,18 @@
 # Allows configuration for the QuirkyApi module.
 module QuirkyApi
   class << self
+    attr_accessor :config
+
+    def config
+      @config ||= Configuration.new
+    end
+
+    def configure
+      yield(config)
+    end
+  end
+
+  class Configuration
     attr_accessor :validate_associations, :warn_invalid_fields, :auth_system,
                   :show_exceptions, :exception_handler, :envelope,
                   :pretty_print, :jsonp, :adapters
@@ -29,10 +41,6 @@ module QuirkyApi
 
     def adapters
       AdapterConfig.instance
-    end
-
-    def configure
-      yield(self)
     end
 
     class AdapterConfig

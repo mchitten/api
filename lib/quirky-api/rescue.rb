@@ -2,11 +2,11 @@
 
 module QuirkyApi
   # The Rescue module rescues certain exceptions and returns their responses
-  # in a JSON response.  If +QuirkyApi.show_exceptions+ is specified, all
+  # in a JSON response.  If +QuirkyApi.config.show_exceptions+ is specified, all
   # of the rescued exceptions below will not be rescued, and will raise.
   module Rescue
     def self.included(base)
-      if base.respond_to?(:rescue_from) && !QuirkyApi.show_exceptions
+      if base.respond_to?(:rescue_from) && !QuirkyApi.config.show_exceptions
         base.send :rescue_from, '::StandardError', with: :internal_error                # 500 Internal Server Error
         base.send :rescue_from, '::CanCan::AccessDenied', with: :unauthorized           # 401 Unauthorized
         base.send :rescue_from, '::InvalidAssociation', with: :error                    # 400 Bad Request

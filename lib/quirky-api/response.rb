@@ -45,7 +45,7 @@ module QuirkyApi
       return if @performed_render
 
       # Fallback to default envelope unless we set one on the options.
-      options[:envelope] = QuirkyApi.envelope unless options.key?(:envelope)
+      options[:envelope] = QuirkyApi.config.envelope unless options.key?(:envelope)
 
       if block_given?
         options = response

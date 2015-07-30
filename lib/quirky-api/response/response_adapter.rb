@@ -103,7 +103,7 @@ module QuirkyApi
         adapters = ADAPTERS.dup
 
         # Get all configured custom adapters and iterate over them.
-        QuirkyApi.adapters.all.each do |configured_adapter|
+        QuirkyApi.config.adapters.all.each do |configured_adapter|
           # Get the index of the adapter that will be used to determine
           # placement on the custom adapter.
           index = adapters.index(configured_adapter[:adapter])
