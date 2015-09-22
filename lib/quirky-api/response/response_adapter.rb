@@ -31,12 +31,13 @@ module QuirkyApi
         PrettyPrintAdapter      # "Prettifies" JSON response.
       ].freeze
 
-      attr_accessor :data, :options
+      attr_accessor :data, :options, :request
       attr_accessor :_finalize_adapters
 
-      def initialize(data, options)
+      def initialize(data, options, request)
         @data = data
         @options = options
+        @options[:request] = request
         @_finalize_adapters = []
       end
 

@@ -166,7 +166,7 @@ module QuirkyApi
     #   #=> [{ id: 1, name: 'Mike Sea' }, { id: 2, name: 'Bob Tester' }]
     #
     def append_meta(data, options = {})
-      @response_adapter = ResponseAdapter.new(data, options)
+      @response_adapter = ResponseAdapter.new(data, options, request)
       @response_adapter.call!
     end
 
@@ -194,7 +194,7 @@ module QuirkyApi
     #                        will appear.
     #
     def build_json_response(data, options = {})
-      @response_adapter ||= ResponseAdapter.new(data, options)
+      @response_adapter ||= ResponseAdapter.new(data, options, request)
       @response_adapter.finalize!(json: data)
     end
 
